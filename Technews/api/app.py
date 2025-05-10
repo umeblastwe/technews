@@ -1,13 +1,15 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template, jsonify
 import requests
 import os
 from datetime import datetime
 
 app = Flask(__name__)
 
-NEWSAPI_KEY = os.getenv("NEWSAPI_KEY")
-CURRENTAPI_KEY = os.getenv("CURRENTAPI_KEY")
+# Set your API keys here (or use environment variables for better security)
+NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "your_newsapi_key")  # Replace with your actual NewsAPI key
+CURRENTAPI_KEY = os.getenv("CURRENTAPI_KEY", "your_currentapi_key")  # Replace with your actual CurrentAPI key
 
+# Function to format the time
 def format_time(timestamp):
     try:
         dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
@@ -15,6 +17,7 @@ def format_time(timestamp):
     except:
         return timestamp
 
+# Fetch tech news from NewsAPI
 def fetch_from_newsapi():
     url = (
         f"https://newsapi.org/v2/top-headlines?"
@@ -37,6 +40,7 @@ def fetch_from_newsapi():
         })
     return articles
 
+# Fetch tech news from CurrentAPI
 def fetch_from_currentapi():
     url = (
         f"https://api.currentsapi.services/v1/latest-news?"
@@ -59,25 +63,26 @@ def fetch_from_currentapi():
         })
     return articles
 
+# Main function to fetch news from either API
 def fetch_tech_news():
     try:
         return fetch_from_newsapi()
-    except:
+    except Exception as e:
+        print(f"NewsAPI failed: {e}")
         try:
             return fetch_from_currentapi()
-        except:
-            return []
+        except Exception as e:
+            print(f"CurrentAPI failed: {e}")
+            return []  # Return empty list if both APIs fail
 
 @app.route("/")
 def home():
     articles = fetch_tech_news()
-    return jsonify(articles)
+    return render_template("main.html", articles=articles)
 
-# Vercel compatibility
+# Vercel compatibility (for serverless deployment)
 def handler(request, context):
-    return app(request.environ, context.start_response)
+    return app(request.environ, start_response=context.start_response)
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
