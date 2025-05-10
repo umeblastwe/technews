@@ -1,197 +1,268 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import { Badge } from "@/components/ui/badge"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Modern Table Styles */
+        #news-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        #news-table thead {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        #news-table th, #news-table td {
+            padding: 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f4f8;
+        }
+        #news-table th {
+            font-weight: 600;
+        }
+        #news-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        #news-table a {
+            color: #0ea5e9;
+            text-decoration: underline;
+        }
+        #news-table a:hover {
+            color: #0d9488;
+        }
 
-const useNews = () => {
-    const [articles, setArticles] = useState<{
-        title: string;
-        description: string;
-        url: string;
-        source: string;
-        publishedAt: string;
-    }[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+        .bg-blue-600 {
+            background-color: #2563eb;
+        }
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            try {
-                const response = await fetch('/api');
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch news: ${response.status}`);
-                }
-                const data = await response.json();
-                if (!data || !Array.isArray(data)) {
-                  throw new Error("Invalid data format from API");
-                }
-                setArticles(data);
-            } catch (err: any) {
-                setError(err.message || "An error occurred while fetching news.");
-            } finally {
-                setLoading(false);
+        .hover\:bg-blue-800:hover {
+            background-color: #1e40af;
+        }
+
+        .text-white {
+            color: #fff;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .bg-gradient-to-br {
+            background-image: linear-gradient(to bottom right, #0e7490, #06b6d4, #38bdf8);
+        }
+
+        .dark\:from-gray-900 {
+            --tw-gradient-from: #0f172a;
+            --tw-gradient-to: #1e293b;
+        }
+
+        .dark\:via-gray-900 {
+            --tw-gradient-via: #1d4ed8;
+        }
+
+        .dark\:to-black {
+            --tw-gradient-to: #000;
+        }
+
+        .animate-gradient {
+            animation: gradient-animation 10s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
             }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .tech-background {
+            background-image:
+              url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22 viewBox=%220 0 400 400%22%3E%3Cdefs%3E%3ClinearGradient id=%22a%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%22400%22%3E%3Cstop offset=%220%22 stop-color=%22%2306b6d4%22/%3E%3Cstop offset=%221%22 stop-color=%22%2338bdf8%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill=%22none%22%3E%3Cpath fill=%22url(%23a)%22 d=%22M0 0h400v400H0z%22/%3E%3Cg opacity=%22.4%22%3E%3Cpath fill=%22%23fff%22 d=%22M123 237l23 2-37 35 94-73 41 33-121 76 128-56-17 53 17-53 121-76-41-33-94 73 37-35-23-2z%22/%3E%3Ccircle fill=%22%23fff%22 cx=%22200%22 cy=%22200%22 r=%2250%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            background-size: 400px 400px;
+            animation: tech-animation 20s linear infinite;
+        }
+
+        @keyframes tech-animation {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 400px 400px;
+            }
+        }
+
+        .bold-bg {
+            background-image: linear-gradient(to bottom right, #1d4ed8, #2563eb, #3b82f6);
+        }
+
+        #get-news-button {
+            transform: scale(1.1);
+            padding: 1rem 2.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-500 tech-background animate-gradient">
+    <div class="min-h-screen bold-bg">
+        <main class="py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="text-center">
+                    <p class="text-lg text-gray-200 mb-4">
+                        Get the latest tech news from around the world.  Click the button below to see the news in a table format.
+                    </p>
+                    <button id="get-news-button" class="bg-blue-600 hover:bg-blue-800 text-white font-semibold rounded-md">
+                        Get Tech News
+                    </button>
+                    <div id="news-container" class="mt-8" style="display: none;">
+                        <table id="news-table" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th class="text-white">Title</th>
+                                    <th class="text-white">Description</th>
+                                    <th class="text-white">Source</th>
+                                    <th class="text-white">Published At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="4" class="text-center text-gray-400 py-8">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                        <div id="no-news-message" class="text-center text-gray-300 dark:text-gray-400" style="display: none;">
+                            No articles available at the moment.
+                        </div>
+                        <div id="error-message" class="text-center text-red-500" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const newsContainer = document.getElementById('news-container');
+        const getNewsButton = document.getElementById('get-news-button');
+        const newsTable = document.getElementById('news-table');
+        const noNewsMessage = document.getElementById('no-news-message');
+        const errorMessageContainer = document.getElementById('error-message');
+        const tableBody = newsTable.querySelector('tbody');
+
+        const getRandomGradient = () => {
+            const gradients = [
+                'from-blue-600 via-cyan-500 to-teal-500',
+                'from-green-400 via-cyan-500 to-blue-500',
+                'from-yellow-400 via-red-500 to-orange-500',
+                'from-rose-500 via-red-500 to-yellow-500',
+                'from-blue-600 via-violet-700 to-purple-800',
+                'from-fuchsia-500 via-pink-500 to-rose-500',
+                'from-teal-400 via-green-500 to-lime-500',
+                'from-orange-400 via-amber-500 to-yellow-600',
+                'from-sky-400 via-blue-500 to-indigo-600',
+                'from-purple-400 via-pink-500 to-red-500',
+                'dark:from-gray-800 dark:via-gray-900 dark:to-black',
+                'dark:from-blue-900 dark:via-purple-900 dark:to-black',
+                'dark:from-green-900 dark:via-teal-900 dark:to-black',
+                'dark:from-yellow-800 dark:via-orange-900 dark:to-red-900',
+                'dark:from-pink-900 dark:via-rose-900 dark:to-red-900',
+            ];
+            return gradients[Math.floor(Math.random() * gradients.length)];
         };
 
-        fetchNews();
-    }, []);
+        const changeBackgroundGradient = () => {
+            const body = document.querySelector('body');
+            const currentGradient = body.classList.value.split(' ').filter(c => c.startsWith('from-') || c.startsWith('dark:from-')).join(' ');
+            let newGradient = getRandomGradient();
+            while (newGradient === currentGradient) {
+                newGradient = getRandomGradient();
+            }
+            body.classList.remove(...currentGradient.split(' '));
+            body.classList.add(...newGradient.split(' '));
+        };
 
-    return { articles, loading, error };
-};
+        document.addEventListener('DOMContentLoaded', () => {
+            changeBackgroundGradient();
+            setInterval(changeBackgroundGradient, 10000);
 
-const getRandomGradient = () => {
-    const gradients = [
-        'from-indigo-500 via-purple-500 to-pink-500',
-        'from-green-400 via-cyan-500 to-blue-500',
-        'from-yellow-400 via-red-500 to-orange-500',
-        'from-rose-500 via-red-500 to-yellow-500',
-        'from-blue-600 via-violet-700 to-purple-800',
-        'from-fuchsia-500 via-pink-500 to-rose-500',
-        'from-teal-400 via-green-500 to-lime-500',
-        'from-orange-400 via-amber-500 to-yellow-600',
-        'from-sky-400 via-blue-500 to-indigo-600',
-        'from-purple-400 via-pink-500 to-red-500',
-    ];
-    return gradients[Math.floor(Math.random() * gradients.length)];
-};
+            getNewsButton.addEventListener('click', () => {
+                newsContainer.style.display = 'block';
+                newsTable.style.display = 'none';
+                noNewsMessage.style.display = 'none';
+                errorMessageContainer.style.display = 'none';
+                tableBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-400 py-8">Loading...</td></tr>';
 
-const NewsPage = () => {
-    const { articles, loading, error } = useNews();
-    const [gradient, setGradient] = useState(getRandomGradient());
+                fetch('/api')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch news: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        tableBody.innerHTML = '';
+                        if (!data || !Array.isArray(data)) {
+                            errorMessageContainer.textContent = "Error: Invalid data format from API";
+                            errorMessageContainer.style.display = 'block';
+                            return;
+                        }
 
-      useEffect(() => {
-        const intervalId = setInterval(() => {
-          setGradient(getRandomGradient());
-        }, 5000); // Change gradient every 5 seconds
+                        if (data.length === 0) {
+                            noNewsMessage.style.display = 'block';
+                            return;
+                        }
 
-        return () => clearInterval(intervalId); // Cleanup on unmount
-      }, []);
-
-    if (error) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-                <div className="text-center text-red-600 dark:text-red-400">
-                    Error: {error}
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div
-            className={cn(
-                "min-h-screen p-4 md:p-8 bg-gradient-to-br transition-all duration-500",
-                gradient
-            )}
-        >
-            <div className="max-w-4xl mx-auto space-y-6">
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="text-center"
-                >
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">
-                        Latest Tech News
-                    </h1>
-                    <p className="text-gray-200 mt-2 text-sm sm:text-base">
-                        Stay updated with the latest happenings in the world of technology.
-                    </p>
-                </motion.div>
-
-                {loading ? (
-                    <div className="space-y-4">
-                        <SkeletonCard />
-                        <SkeletonCard />
-                        <SkeletonCard />
-                    </div>
-                ) : articles.length === 0 ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                        className="text-center text-gray-300"
-                    >
-                        No articles available at the moment.
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                        className="space-y-4"
-                    >
-                        {articles.map((article, index) => (
-                            <NewsCard key={index} article={article} />
-                        ))}
-                    </motion.div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-const NewsCard = ({ article }: { article: {
-    title: string;
-    description: string;
-    url: string;
-    source: string;
-    publishedAt: string;
-} }) => {
-    return (
-        <motion.div
-          whileHover={{ scale: 1.03 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        >
-        <Card className="bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01]">
-            <CardHeader>
-                <CardTitle className="text-lg font-semibold text-white">
-                    <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                        {article.title}
-                    </a>
-                </CardTitle>
-                <CardDescription className="text-gray-300">
-                    {article.description}
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="flex flex-wrap items-center justify-between text-sm text-gray-400">
-                  <Badge
-                    variant="secondary"
-                    className="bg-blue-500/20 text-blue-300 border-blue-500/30 mr-2"
-                  >
-                    {article.source}
-                  </Badge>
-                  <span>{article.publishedAt}</span>
-                </div>
-            </CardContent>
-        </Card>
-        </motion.div>
-    );
-};
-
-const SkeletonCard = () => {
-    return (
-        <Card className="bg-white/5 backdrop-blur-md border border-white/10">
-            <CardHeader>
-                <CardTitle>
-                    <Skeleton className="h-6 w-3/4 bg-gray-700" />
-                </CardTitle>
-                <CardDescription>
-                    <Skeleton className="h-4 w-full bg-gray-700" />
-                    <Skeleton className="h-4 w-5/6 mt-2 bg-gray-700" />
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="flex items-center justify-between text-sm">
-                    <Skeleton className="h-4 w-1/4 bg-gray-700" />
-                    <Skeleton className="h-4 w-1/4 bg-gray-700" />
-                </div>
-            </CardContent>
-        </Card>
-    );
-};
-
-export default NewsPage;
+                        newsTable.style.display = 'table';
+                        const articleRows = data.map(article => {
+                            return `
+                                <tr>
+                                    <td><a href="${article.url}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-cyan-300 transition-colors duration-300">${article.title}</a></td>
+                                    <td class="text-gray-200">${article.description}</td>
+                                    <td class="text-cyan-200">${article.source}</td>
+                                    <td class="text-gray-300">${article.publishedAt}</td>
+                                </tr>
+                            `;
+                        }).join('');
+                        tableBody.innerHTML = articleRows;
+                    })
+                    .catch(error => {
+                        errorMessageContainer.textContent = `Error: ${error.message}`;
+                        errorMessageContainer.style.display = 'block';
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
