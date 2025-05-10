@@ -75,5 +75,9 @@ def home():
 
 # Vercel compatibility
 def handler(request, context):
-    return app(request.environ, start_response=context.start_response)
+    return app(request.environ, context.start_response)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
 
